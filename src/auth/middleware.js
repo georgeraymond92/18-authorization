@@ -15,6 +15,7 @@ module.exports = (req, res, next) => {
       case 'basic': 
         return _authBasic(authString);
       case 'bearer':
+      console.log(`Made it through switch......`);
       return _authBearer(authString);
       default: 
         return _authError();
