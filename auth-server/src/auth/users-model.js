@@ -3,6 +3,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv');
 
 const SINGLE_USE_TOKENS = !!process.env.SINGLE_USE_TOKENS;
 const TOKEN_EXPIRE = process.env.TOKEN_LIFETIME || '5m';
@@ -44,6 +45,13 @@ users.statics.createFromOauth = function(email) {
     });
 
 };
+
+users.statics.authenicateToken = function(token) {
+  let parsedToken = jwt.verify(token, SECRET);
+  let query = {_id:parsedToken.id};
+  // console.log(`parsed token id: ${parsedToken.id}`);
+  return this.findOne(query);
+}
 
 users.statics.authenticateBasic = function(auth) {
   let query = {username:auth.username};

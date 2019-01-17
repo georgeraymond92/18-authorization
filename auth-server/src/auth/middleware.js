@@ -8,10 +8,14 @@ module.exports = (req, res, next) => {
   // Bearer Token ...
   try {
     let [authType, authString] = req.headers.authorization.split(/\s+/);
+    console.log(authType);
+    console.log(authString);
     
     switch( authType.toLowerCase() ) {
       case 'basic': 
         return _authBasic(authString);
+      case 'bearer':
+      return _authBearer(authString);
       default: 
         return _authError();
     }
@@ -31,6 +35,13 @@ module.exports = (req, res, next) => {
     return User.authenticateBasic(auth)
       .then(user => _authenticate(user) )
       .catch(next);
+  }
+
+  function _authBearer(str) {
+    // console.log(`_authBearer: ${str}`);
+    return User.authenticateToken(str)
+    .then(user => _authenticate(user) )
+    .catch(next);
   }
 
   function _authenticate(user) {
